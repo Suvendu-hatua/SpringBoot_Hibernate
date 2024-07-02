@@ -1,10 +1,10 @@
 package com.hibernate.HibernateDemo;
 
+import com.hibernate.HibernateDemo.dao.EmpInheritanceDao;
+import com.hibernate.HibernateDemo.dao.EmployeeDao;
 import com.hibernate.HibernateDemo.dao.PersonDao;
 import com.hibernate.HibernateDemo.dao.StudentDao;
-import com.hibernate.HibernateDemo.pojos.Address;
-import com.hibernate.HibernateDemo.pojos.Person;
-import com.hibernate.HibernateDemo.pojos.Student;
+import com.hibernate.HibernateDemo.pojos.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,9 +21,9 @@ public class HibernateDemoApplication {
 		SpringApplication.run(HibernateDemoApplication.class, args);
 	}
 	@Bean
-	public CommandLineRunner commandLineRunner(StudentDao studentDao,PersonDao personDao){
+	public CommandLineRunner commandLineRunner(StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao){
 		return runner->{
-			//Methods for StudentDao
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods for StudentDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //			createStudent(studentDao);
 //			readStudentById(studentDao);
 //			displayStudentsByName(studentDao);
@@ -33,9 +33,49 @@ public class HibernateDemoApplication {
 //			deleteStudent(studentDao);
 //			deleteAllStudents(studentDao);
 
-			//Methods for PersonDao
-			addPerson(personDao);
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods for PersonDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//			addPerson(personDao);
+
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods of EmployeeDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,
+//			addEmployee(employeeDao);
+
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Methods of EmpInheritanceDao <<<<<<<<<<<<<<<<<<<<<<
+			addEmployeeInheritance(empInheritanceDao);
 		};
+	}
+
+	private  void addEmployeeInheritance(EmpInheritanceDao empInheritanceDao){
+		//Saving permanent Employee
+		PermanentEmployee permanentEmployee=new PermanentEmployee();
+		permanentEmployee.setEmpName("Akash Maity"); permanentEmployee.setSalary(37000.23f);
+		permanentEmployee.setIncentive(9000.76f);
+		empInheritanceDao.savePermanentEmployee(permanentEmployee);
+
+		//Saving permanent Employee
+		ContractEmployee contractEmployee=new ContractEmployee();
+		contractEmployee.setEmpName("Sonali Samanta"); contractEmployee.setPerDaySalary(1200.56f);
+		contractEmployee.setDurationDay(10);
+		empInheritanceDao.saveContractEmployee(contractEmployee);
+	}
+
+	private void addEmployee(EmployeeDao employeeDao){
+		//creating Employee Instance.
+		Employee_Pojo employeePojo=new Employee_Pojo();
+		employeePojo.setEmpEmail("Suvendu@gmail.com");
+		employeePojo.setFirstName("Nirmal"); employeePojo.setLastName("Samanta");
+		//Creating Address instance
+		Address a1=new Address();
+		a1.setCityName("Medinipur"); a1.setState("West Bengal"); a1.setPinNumber(721152);
+		Address a2=new Address();
+		a2.setCityName("Gobardhanpur"); a2.setState("Bihar"); a2.setPinNumber(721140);
+		employeePojo.getAddresses().add(a1);
+		employeePojo.getAddresses().add(a2);
+
+		System.out.println("*********************** Creation of Employee ******************");
+		employeeDao.addEmployee(employeePojo);
+		System.out.println("Employee has been added successfully...");
+		System.out.println("Employee ID:"+employeePojo.getEmpId());
+
 	}
 
 	private void addPerson(PersonDao personDao){

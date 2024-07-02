@@ -4,8 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import org.springframework.stereotype.Component;
 
-//@Embeddable
-@Component
+@Embeddable
+//@Component
 public class Address {
     //Defining all the instance variables.
     @Column(name = "city_name",length = 20)
