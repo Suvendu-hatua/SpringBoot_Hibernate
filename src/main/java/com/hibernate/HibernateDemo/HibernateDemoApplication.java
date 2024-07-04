@@ -1,9 +1,6 @@
 package com.hibernate.HibernateDemo;
 
-import com.hibernate.HibernateDemo.dao.EmpInheritanceDao;
-import com.hibernate.HibernateDemo.dao.EmployeeDao;
-import com.hibernate.HibernateDemo.dao.PersonDao;
-import com.hibernate.HibernateDemo.dao.StudentDao;
+import com.hibernate.HibernateDemo.dao.*;
 import com.hibernate.HibernateDemo.pojos.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +18,7 @@ public class HibernateDemoApplication {
 		SpringApplication.run(HibernateDemoApplication.class, args);
 	}
 	@Bean
-	public CommandLineRunner commandLineRunner(StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao){
+	public CommandLineRunner commandLineRunner(StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao, EmployeeJOINDao employeeJOINDao){
 		return runner->{
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods for StudentDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //			createStudent(studentDao);
@@ -40,8 +37,25 @@ public class HibernateDemoApplication {
 //			addEmployee(employeeDao);
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Methods of EmpInheritanceDao <<<<<<<<<<<<<<<<<<<<<<
-			addEmployeeInheritance(empInheritanceDao);
+//			addEmployeeInheritance(empInheritanceDao);
+
+			addEmployee_Join(employeeJOINDao);
 		};
+	}
+
+	private void addEmployee_Join(EmployeeJOINDao employeeJOINDao){
+		//Creating permanent Employee
+		PermanentEmp_JOIN emp1=new PermanentEmp_JOIN();
+		emp1.setEmpName("Suvendu Hatua");emp1.setEmpAge(24); emp1.setSalary(39000);emp1.setIncentive(11);
+
+		//Creating Contract Employee
+		ContractEmp_JOIN emp2=new ContractEmp_JOIN();
+		emp2.setEmpName("Sonali Samanta"); emp2.setEmpAge(22); emp2.setPerDaySalary(1200); emp2.setDuration(10);
+
+		//Saving both the permanent and Contractual Employees
+		employeeJOINDao.savePermanentEmp(emp1);
+		employeeJOINDao.saveContractEmp(emp2);
+		System.out.println("Both the employees has been added successfully...");
 	}
 
 	private  void addEmployeeInheritance(EmpInheritanceDao empInheritanceDao){
