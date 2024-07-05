@@ -7,7 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = {"com.hibernate.HibernateDemo.*"})
@@ -18,7 +20,8 @@ public class HibernateDemoApplication {
 		SpringApplication.run(HibernateDemoApplication.class, args);
 	}
 	@Bean
-	public CommandLineRunner commandLineRunner(StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao, EmployeeJOINDao employeeJOINDao){
+	public CommandLineRunner commandLineRunner(
+			StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao, EmployeeJOINDao employeeJOINDao,OneToManyDao oneToManyDao){
 		return runner->{
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods for StudentDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //			createStudent(studentDao);
@@ -39,8 +42,37 @@ public class HibernateDemoApplication {
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Methods of EmpInheritanceDao <<<<<<<<<<<<<<<<<<<<<<
 //			addEmployeeInheritance(empInheritanceDao);
 
-			addEmployee_Join(employeeJOINDao);
+			//***************************************** Join Table strategy ************************************
+//			addEmployee_Join(employeeJOINDao);
+
+			//***************************************** OneToMany RelationShip ************************************
+			saveOneToMany(oneToManyDao);
 		};
+	}
+	//***************************************** OneToMany RelationShip ************************************
+	private void saveOneToMany(OneToManyDao oneToManyDao){
+		//creating Vendor instance
+		Vendor_Pojo vendorPojo=new Vendor_Pojo();
+		vendorPojo.setVendorName("IBM");
+		//Creating multiple Customer instance
+		Customer_Pojo customerPojo1=new Customer_Pojo();
+		customerPojo1.setCustomerName("TCS");
+		customerPojo1.setCustomerEmail("tcsindia@de.in");
+		customerPojo1.setCustomerID(2020);
+
+		Customer_Pojo customerPojo2=new Customer_Pojo();
+		customerPojo2.setCustomerID(2045); customerPojo2.setCustomerName("ZOHO Corporation");customerPojo2.setCustomerEmail("zohosupport@com.in");
+
+		//Adding customers to Vendor_Pojo
+		Set<Customer_Pojo> customers=new HashSet<>();
+		customers.add(customerPojo1); customers.add(customerPojo2);
+		vendorPojo.setCustomers(customers);
+
+
+		//Calling the saving method
+		oneToManyDao.save(vendorPojo);
+
+		System.out.println("OneToMany Relationship has been established successfully....");
 	}
 
 	private void addEmployee_Join(EmployeeJOINDao employeeJOINDao){
