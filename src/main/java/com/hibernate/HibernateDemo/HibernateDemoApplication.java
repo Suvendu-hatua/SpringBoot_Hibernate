@@ -21,7 +21,8 @@ public class HibernateDemoApplication {
 	}
 	@Bean
 	public CommandLineRunner commandLineRunner(
-			StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao, EmployeeJOINDao employeeJOINDao,OneToManyDao oneToManyDao){
+			StudentDao studentDao, PersonDao personDao, EmployeeDao employeeDao, EmpInheritanceDao empInheritanceDao, EmployeeJOINDao employeeJOINDao,OneToManyDao oneToManyDao,
+			ManyToOneDao manyToOneDao){
 		return runner->{
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Methods for StudentDao<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //			createStudent(studentDao);
@@ -46,9 +47,34 @@ public class HibernateDemoApplication {
 //			addEmployee_Join(employeeJOINDao);
 
 			//***************************************** OneToMany RelationShip ************************************
-			saveOneToMany(oneToManyDao);
+//			saveOneToMany(oneToManyDao);
+			//***************************************** ManyToOne RelationShip ************************************
+			saveManyToOne(manyToOneDao);
 		};
 	}
+	//***************************************** OneToMany RelationShip ************************************
+	private void saveManyToOne(ManyToOneDao manyToOneDao){
+		//Creating Organization instance
+		Organization_Pojo org=new Organization_Pojo();
+		org.setOrgLocation("Pune"); org.setOrgName("Volkswagen Group It Services India");
+		org.setOrgId(2001);
+//		manyToOneDao.saveOrganization(org);
+		//Creating multiple Department instance
+		Department_Pojo d1=new Department_Pojo();
+		d1.setDeptName("SDC");d1.setOrganization(org);
+
+		Department_Pojo d2=new Department_Pojo();
+		 d2.setDeptName("Testing");d2.setOrganization(org);
+
+		//Saving the departments----> will automatically save Organization as well.
+		manyToOneDao.saveDepartments(d1);
+		manyToOneDao.saveDepartments(d2);
+//		manyToOneDao.saveOrganization(org);
+
+		System.out.println("**************Many To One Relationship Successful**************************");
+
+	}
+
 	//***************************************** OneToMany RelationShip ************************************
 	private void saveOneToMany(OneToManyDao oneToManyDao){
 		//creating Vendor instance
